@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-FUNC="blambda"
-S3_BUCKET="vdda-sandbox"
+FUNC="twilio2slack"
 S3_KEY="lambda/twilio2slack-1.0-SNAPSHOT.zip"
 
 echo "Creating $FUNC"
