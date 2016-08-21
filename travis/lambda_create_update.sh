@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FUNC="twilio2slack"
+LAMBDA="twilio2slack"
 POLICY="lambda-basic"
 ROLE="dev-lambda-role"
 S3_KEY="lambda/twilio2slack-1.0-SNAPSHOT.zip"
@@ -24,11 +24,11 @@ else
     echo "Policy ARN: ${POLICY_ARN}"
 fi
 
-aws lambda get-function --function-name ${FUNC}
+aws lambda get-function --function-name ${LAMBDA}
 if [ $? -ne 0 ]
 then
-    echo "Creating lambda ${FUNC}"
-    aws lambda create-function --function-name ${FUNC} --runtime java8 --role ${ROLE_ARN} --handler ForwardSms::processSms --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --output json
+    echo "Creating lambda ${LAMBDA}"
+    aws lambda create-function --function-name ${LAMBDA} --runtime java8 --role ${ROLE_ARN} --handler ForwardSms::processSms --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --timeout 5 --output json
     if [ $? -ne 0 ]
     then
         echo "Failed to create lambda"
@@ -36,8 +36,8 @@ then
     fi
     echo "Successfully created lambda"
 else
-    echo "Updating lambda ${FUNC}"
-    aws lambda update-function-code --function-name ${FUNC} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
+    echo "Updating lambda ${LAMBDA}"
+    aws lambda update-function-code --function-name ${LAMBDA} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
     if [ $? -ne 0 ]
     then
         echo "Failed to update lambda"
@@ -46,8 +46,8 @@ else
     echo "Successfully updated function"
 fi
 
-echo "Invoking $FUNC"
-aws lambda invoke --function-name ${FUNC} --payload file://travis/lambda_payload.json --log-type Tail output.json
+echo "Invoking $LAMBDA"
+aws lambda invoke --function-name ${LAMBDA} --payload file://travis/lambda_payload.json --log-type Tail output.json
 if [ $? -ne 0 ]
 then
     echo "Failed to invoke lambda"

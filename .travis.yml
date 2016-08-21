@@ -7,12 +7,20 @@ before_install:
 # install AWS CLI
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
-install: true
+install: true # prevents ./gradlew from running
+cache:
+  directories:
+    - $HOME/.gradle/caches/2.13
+    - $HOME/.gradle/caches/jars-1
+    - $HOME/.gradle/daemon
+    - $HOME/.gradle/native
+    - $HOME/.gradle/wrapper
 script: "./gradlew build"
 branches:
   only:
   - master
 deploy:
+# requires the following environment variable on travis: AWS_DEFAULT_REGION
   provider: s3
   access_key_id: AKIAIAUH2WARTNOIU6ZQ
   secret_access_key:
@@ -21,12 +29,11 @@ deploy:
   local-dir: build/distributions
   upload-dir: lambda
   acl: private
-  region: eu-west-1
   on:
     repo: vandiedakaf/twilio2slack
   skip_cleanup: true
 after_deploy:
-# requires the following environment variables on travis AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & AWS_DEFAULT_REGION
+# requires the following environment variables on travis: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & AWS_DEFAULT_REGION
   - ./travis/lambda_create_update.sh || travis_terminate 1
 notifications:
   email: false
