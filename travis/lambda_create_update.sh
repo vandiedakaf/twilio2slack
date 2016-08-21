@@ -10,8 +10,8 @@ aws iam get-role --role-name ${ROLE}
 if [ $? -ne 0 ]
 then
     echo "Creating Roles and Policies"
-    ROLE_ARN=$(aws iam create-role --role-name ${ROLE} --assume-role-policy-document file://trust_policy.json | jq -r .Role.Arn)
-    POLICY_ARN=$(aws iam create-policy --policy-document file://policy_lambda_basic.json --output json --policy-name ${POLICY} | jq -r .Policy.Arn)
+    ROLE_ARN=$(aws iam create-role --role-name ${ROLE} --assume-role-policy-document file://travis/trust_policy.json | jq -r .Role.Arn)
+    POLICY_ARN=$(aws iam create-policy --policy-document file://travis/policy_lambda_basic.json --output json --policy-name ${POLICY} | jq -r .Policy.Arn)
     aws iam attach-role-policy --role-name ${ROLE} --policy-arn ${POLICY_ARN}
 fi
 
