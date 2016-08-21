@@ -22,14 +22,19 @@ else
 fi
 
 echo "Invoking $FUNC"
-aws lambda invoke --function-name $FUNC --payload file://.travis/lambda_payload.json --log-type Tail --output json output.json
+aws lambda invoke --function-name $FUNC --payload file://.travis/lambda_payload.json --log-type Tail output.json
 if [ $? -ne 0 ]
 then
     echo "Failed to invoke lambda"
     exit 1
 fi
-cat output.json
-cat ./travis/output.json
+if grep -Fxq "errorMessage" output.json
+then
+    cat output.json
+    echo "Lambda invoke error"
+    exit 1;
+fi
+
 
 echo "Successfully created or updated lambda"
 exit 0
