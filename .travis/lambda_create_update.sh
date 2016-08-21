@@ -23,7 +23,7 @@ else
 fi
 
 echo "Invoking $FUNC"
-aws lambda invoke --function-name $FUNC --payload lambda_payload.json --log-type Tail --output json
+aws lambda invoke --function-name $FUNC --payload ./travis/lambda_payload.json --log-type Tail --output json
 if [ $? -ne 0 ]
 then
     echo "Failed to invoke lambda"
