@@ -15,7 +15,8 @@ public class ForwardSms {
     public String processSms(String value, Context context) {
         final String from = "1234567890";
         final String message = "Use the pin 123456 to verify your account";
-        sendSlackMessage(message, from);
+
+//        sendSlackMessage(message, from);
 
         return String.valueOf(value);
     }
