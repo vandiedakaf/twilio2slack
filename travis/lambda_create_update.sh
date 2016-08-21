@@ -20,7 +20,7 @@ then
 else
     ROLE_ARN=$(aws iam get-role --role-name ${ROLE} | jq -r .Role.Arn)
     echo "Role ARN: ${ROLE_ARN}"
-    POLICY_ARN=$(aws iam get-policy --policy-name ${POLICY} | jq -r .Policy.Arn)
+    POLICY_ARN=$(aws iam list-policies --scope Local | jq -r ".Policies[] | select(.PolicyName==\"${POLICY}\").Arn")
     echo "Policy ARN: ${POLICY_ARN}"
 fi
 
