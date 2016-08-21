@@ -28,12 +28,13 @@ then
     echo "Failed to invoke lambda"
     exit 1
 fi
-if grep -Fxq "errorMessage" output.json
+if grep -q "errorMessage" output.json
 then
     cat output.json
     echo "Lambda invoke error"
     exit 1;
 fi
+cat output.json
 
 
 echo "Successfully created or updated lambda"
