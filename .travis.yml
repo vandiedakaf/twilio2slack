@@ -26,6 +26,7 @@ deploy:
     repo: vandiedakaf/twilio2slack
   skip_cleanup: true
 after_deploy:
+# you need to set the following environment variables on travis AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & AWS_DEFAULT_REGION
   - ./.travis/create_lambda.sh
 notifications:
   email: false
