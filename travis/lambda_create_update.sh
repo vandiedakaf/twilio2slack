@@ -11,32 +11,32 @@ if [ $? -ne 0 ]
 then
     echo "Creating Roles and Policies"
     ROLE_ARN=$(aws iam create-role --role-name ${ROLE} --assume-role-policy-document file://travis/trust_policy.json | jq -r .Role.Arn)
+    echo "Role ARN: ${ROLE_ARN}"
     POLICY_ARN=$(aws iam create-policy --policy-document file://travis/policy_lambda_basic.json --output json --policy-name ${POLICY} | jq -r .Policy.Arn)
+    echo "Policy ARN: ${POLICY_ARN}"
     aws iam attach-role-policy --role-name ${ROLE} --policy-arn ${POLICY_ARN}
 fi
 
 aws lambda get-function --function-name ${FUNC}
 if [ $? -ne 0 ]
 then
-    echo "Creating lambda $FUNC"
+    echo "Creating lambda ${FUNC}"
     aws lambda create-function --function-name ${FUNC} --runtime java8 --role ${ROLE_ARN} --handler ForwardSms::processSms --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --output json
-    if [ $? -eq 0 ]
+    if [ $? -ne 0 ]
     then
-      echo "Successfully created lambda"
-    else
         echo "Failed to create lambda"
         exit 1
     fi
+    echo "Successfully created lambda"
 else
-    echo "Updating lambda $FUNC"
+    echo "Updating lambda ${FUNC}"
     aws lambda update-function-code --function-name ${FUNC} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
-    if [ $? -eq 0 ]
+    if [ $? -ne 0 ]
     then
-        echo "Successfully updated function"
-    else
         echo "Failed to update lambda"
         exit 1
     fi
+    echo "Successfully updated function"
 fi
 
 echo "Invoking $FUNC"

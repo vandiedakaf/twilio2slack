@@ -10,7 +10,9 @@ repositories {
 dependencies {
     compile (
             'com.amazonaws:aws-lambda-java-core:1.1.0',
-            'com.amazonaws:aws-lambda-java-events:1.1.0'
+            'com.amazonaws:aws-lambda-java-events:1.1.0',
+            'com.mashape.unirest:unirest-java:1.4.7',
+            'org.slf4j:slf4j-simple:1.6.1'
     )
 }
 
