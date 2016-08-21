@@ -3,7 +3,7 @@ jdk:
 - oraclejdk8
 before_install:
 - chmod +x gradlew
-- chmod +x ./.travis/create_lambda.sh
+- chmod +x ./.travis/lambda_create_update.sh
 # install AWS CLI
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
@@ -26,7 +26,7 @@ deploy:
     repo: vandiedakaf/twilio2slack
   skip_cleanup: true
 after_deploy:
-# you need to set the following environment variables on travis AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & AWS_DEFAULT_REGION
-  - ./.travis/create_lambda.sh
+# requires the following environment variables on travis AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & AWS_DEFAULT_REGION
+  - ./.travis/lambda_create_update.sh
 notifications:
   email: false
