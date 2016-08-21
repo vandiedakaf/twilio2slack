@@ -1,0 +1,30 @@
+language: java
+jdk:
+- oraclejdk8
+before_install:
+- chmod +x gradlew
+# install AWS CLI
+- pip install --user awscli
+- export PATH=$PATH:$HOME/.local/bin
+install: true
+script: "./gradlew build"
+branches:
+  only:
+  - master
+deploy:
+  provider: s3
+  access_key_id: AKIAIAUH2WARTNOIU6ZQ
+  secret_access_key:
+    secure: L6h/chhQLRckvPp2y4A6M39nHJ7ExtRSPfqXS6UtLInItQRXeiyM99jHe4znPXFCHJ21SedekLQ0mmCXrULqLm8rIA75eY4MTtrAosWhD038J83SxEoKWIcRvmWdCg/BQozjrvLjHjXUWnM+ToUbwz+E9m13MccYGp8CnKUuhj11sPpBS/S4iE9KnCMEslv/4DHuJG5rhE6pYhqFpqlmPlXiz3XI8yc6RMZoDnBzhcSoxMGJRjcCr1TLCTSAv6CTXghF0pLRbIOt3NL3RGd+B4VTUJEpVMAM9ZQ5/vOkLHkHTHRGu6oqdIlm4RsAEfaWmiOPkVQDqYi1wyGvbmxn61zQhrMccDJ3pl6lmsf5uplfUWxvfxz11ORzPe7NEcVtDQt+MAc/oBiRjLl5IullY9MVWhtUpEV588r/VQjm7fRY1oyHA0moinxKwO8WIXAFi1MRU+5F/QgzZrQCFkDbgNGFGvzv1oYQjL1raiDD50i0lAmPvop2jD2FlxSy+TDSTytYQaFbORwBOuSnIQMiG12qkWmx7dUZYkopsucUK2t+WYoojLJW+4SyPfS3CH56zBfxH6FdhlwgWNSr+7Pgn3vN9XrVs8PmFKfSMDz/CStyPBbnISJ9fbbkhERdea0UQ6iGV6jZe4MmDuTxjQmXEAyyfKMmz01x47W1+7r3gqQ=
+  bucket: vdda-sandbox
+  local-dir: build/distributions
+  upload-dir: lambda
+  acl: private
+  region: eu-west-1
+  on:
+    repo: vandiedakaf/twilio2slack
+  skip_cleanup: true
+after_deploy:
+  - ./.travis/create_lambda.sh
+notifications:
+  email: false
