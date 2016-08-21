@@ -30,12 +30,10 @@ then
 fi
 if grep -q "errorMessage" output.json
 then
+    echo "Lambda invoke error: "
     cat output.json
-    echo "Lambda invoke error"
     exit 1;
 fi
-cat output.json
-
 
 echo "Successfully created or updated lambda"
 exit 0
