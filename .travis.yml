@@ -7,7 +7,7 @@ before_install:
 # install AWS CLI
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
-install: true # prevents ./gradlew from running
+install: true # prevents ./gradlew assemble from running
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
