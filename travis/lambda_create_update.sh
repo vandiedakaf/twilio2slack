@@ -15,15 +15,21 @@ then
     aws iam attach-role-policy --role-name ${ROLE} --policy-arn ${POLICY_ARN}
 fi
 
-echo "Creating $FUNC"
-aws lambda create-function --function-name ${FUNC} --runtime java8 --role ${ROLE_ARN} --handler ForwardSms::processSms --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --output json
-if [ $? -eq 0 ]
+aws lambda get-function --function-name ${FUNC}
+if [ $? -ne 0 ]
 then
-  echo "Successfully created function"
+    echo "Creating lambda $FUNC"
+    aws lambda create-function --function-name ${FUNC} --runtime java8 --role ${ROLE_ARN} --handler ForwardSms::processSms --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --output json
+    if [ $? -eq 0 ]
+    then
+      echo "Successfully created lambda"
+    else
+        echo "Failed to create lambda"
+        exit 1
+    fi
 else
-  echo "Updating $FUNC"
-  aws lambda update-function-code --function-name ${FUNC} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
-
+    echo "Updating lambda $FUNC"
+    aws lambda update-function-code --function-name ${FUNC} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
     if [ $? -eq 0 ]
     then
         echo "Successfully updated function"
