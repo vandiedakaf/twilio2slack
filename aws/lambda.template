@@ -52,7 +52,7 @@
         },
         "Code": {
           "S3Bucket": "vdda-lambda-test",
-          "S3Key": "twillio2slack-1.0-SNAPSHOT.zip"
+          "S3Key": "twilio2slack-1.0-SNAPSHOT.zip"
         },
         "Runtime": "java8",
         "Timeout": "10"
