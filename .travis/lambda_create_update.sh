@@ -28,6 +28,8 @@ then
     echo "Failed to invoke lambda"
     exit 1
 fi
+cat output.json
+cat ./travis/output.json
 
 echo "Successfully created or updated lambda"
 exit 0
