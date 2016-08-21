@@ -24,7 +24,7 @@ deploy:
   on:
     repo: vandiedakaf/twilio2slack
   skip_cleanup: true
-after_deploy:
-  - ./.travis/create_lambda.sh
+#after_deploy:
+#  - ./.travis/create_lambda.sh
 notifications:
   email: false
