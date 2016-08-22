@@ -7,6 +7,13 @@
       ],
       "Resource": "arn:aws:logs:*:*:*",
       "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": "arn:aws:s3:::vdda-config",
+      "Effect": "Allow"
     }
   ]
 }

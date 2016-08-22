@@ -29,6 +29,7 @@ deploy:
   local-dir: build/distributions
   upload-dir: lambda
   acl: private
+  region: eu-west-1
   on:
     repo: vandiedakaf/twilio2slack
   skip_cleanup: true
