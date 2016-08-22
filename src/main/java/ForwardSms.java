@@ -4,6 +4,11 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * Created by francois on 2016-08-18.
  */
@@ -16,17 +21,41 @@ public class ForwardSms {
         final String from = "1234567890";
         final String message = "Use the pin 123456 to verify your account";
 
+        final Properties config = loadProperties();
+
+        System.out.println(config.getProperty("slack.web_hook"));
 //        sendSlackMessage(message, from);
 
         return String.valueOf(value);
     }
 
-    private void sendSlackMessage(String message, String from){
+    private Properties loadProperties() {
+        Properties properties = new Properties();
+        InputStream input = null;
+
+        try {
+            input = new FileInputStream("config.properties");
+            properties.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return properties;
+    }
+
+    private void sendSlackMessage(String message, String from) {
         String webHookResponse;
         try {
             webHookResponse = Unirest.post(WEB_HOOK)
                     .body("{\"text\": \"A Twilio message has been delivered.\"," +
-                            "\"attachments\":[{\"title\":\"Message\",\"text\":\""+message+"\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"From\",\"value\":\""+from+"\"}]}]}")
+                            "\"attachments\":[{\"title\":\"Message\",\"text\":\"" + message + "\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"From\",\"value\":\"" + from + "\"}]}]}")
                     .asString().getBody();
         } catch (UnirestException ex) {
             LOG.warn("post to web hook", ex);
