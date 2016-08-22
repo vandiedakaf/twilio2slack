@@ -39,6 +39,7 @@ public class ForwardSms {
     }
 
     private File getConfig() {
+        System.out.println("getConfig...");
         AmazonS3Client s3Client = new AmazonS3Client();
         File localFile = new File("config2.properties");
         s3Client.getObject(new GetObjectRequest("vdda-config", "config.properties"), localFile);
@@ -67,7 +68,7 @@ public class ForwardSms {
     private void sendSlackMessage(String message, String from) {
         try {
             Unirest.post(WEB_HOOK)
-                    .body("{\"text\": \"A Twilio message has been delivered.\"," +
+                    .body("{\"text\": \"A Twilio message has been received.\"," +
                             "\"attachments\":[{\"title\":\"Message\",\"text\":\"" + message + "\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"From\",\"value\":\"" + from + "\"}]}]}")
                     .asString().getBody();
         } catch (UnirestException ex) {
