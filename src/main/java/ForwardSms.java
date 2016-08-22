@@ -30,22 +30,12 @@ public class ForwardSms {
     }
 
     private Properties loadProperties() {
+        InputStream is = ForwardSms.class.getResourceAsStream("config.properties");
         Properties properties = new Properties();
-        InputStream input = null;
-
         try {
-            input = new FileInputStream("config.properties");
-            properties.load(input);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            properties.load(is);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return properties;
     }
@@ -60,5 +50,11 @@ public class ForwardSms {
         } catch (UnirestException ex) {
             LOG.warn("post to web hook", ex);
         }
+    }
+
+    public static void main(String[] args){
+        ForwardSms forwardSms = new ForwardSms();
+        final Properties config = forwardSms.loadProperties();
+        System.out.println(config.getProperty("slack.web_hook"));
     }
 }
