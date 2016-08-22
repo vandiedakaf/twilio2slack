@@ -6,9 +6,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -21,7 +19,8 @@ public class ForwardSms {
 
     public static void main(String[] args) {
         ForwardSms forwardSms = new ForwardSms();
-        final Properties config = forwardSms.loadProperties();
+        File configFile = forwardSms.getConfig();
+        final Properties config = forwardSms.loadProperties(configFile);
         System.out.println(config.getProperty("slack.web_hook"));
     }
 
@@ -29,9 +28,9 @@ public class ForwardSms {
         final String from = "1234567890";
         final String message = "Use the pin 123456 to verify your account";
 
-        getConfig();
+        final File configFile = getConfig();
 
-        final Properties config = loadProperties();
+        final Properties config = loadProperties(configFile);
 
         System.out.println(config.getProperty("slack.web_hook"));
 //        sendSlackMessage(message, from);
@@ -39,17 +38,26 @@ public class ForwardSms {
         return String.valueOf(value);
     }
 
-    private void getConfig() {
+    private File getConfig() {
         AmazonS3Client s3Client = new AmazonS3Client();
         File localFile = new File("config2.properties");
         s3Client.getObject(new GetObjectRequest("vdda-config", "config.properties"), localFile);
+
+        System.out.println(localFile.exists() && localFile.canRead());
+
+        return localFile;
     }
 
-    private Properties loadProperties() {
-        InputStream is = ForwardSms.class.getResourceAsStream("config.properties2");
+    private Properties loadProperties(File file) {
+        FileInputStream fileInput = null;
+        try {
+            fileInput = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         Properties properties = new Properties();
         try {
-            properties.load(is);
+            properties.load(fileInput);
         } catch (IOException e) {
             e.printStackTrace();
         }
