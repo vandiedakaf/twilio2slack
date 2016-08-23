@@ -42,9 +42,6 @@ public class ForwardSms {
     private File getConfig() {
         System.out.println("getConfig...");
         AmazonS3Client s3Client = new AmazonS3Client();
-        System.out.println("listing buckets");
-        List buckets = s3Client.listBuckets();
-        System.out.println(buckets.toString());
 
         System.out.println("get object...");
         File localFile = new File("config2.properties");

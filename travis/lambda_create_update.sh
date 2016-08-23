@@ -10,56 +10,56 @@ S3_KEY="lambda/twilio2slack-1.0-SNAPSHOT.zip"
 aws iam get-role --role-name ${ROLE}
 if [ $? -ne 0 ]
 then
-    echo "\nCreating Roles and Policies"
+    echo "Creating Roles and Policies"
     ROLE_ARN=$(aws iam create-role --role-name ${ROLE} --assume-role-policy-document file://travis/trust_policy.json | jq -r .Role.Arn)
-    echo "\nRole ARN: ${ROLE_ARN}"
+    echo "Role ARN: ${ROLE_ARN}"
     POLICY_ARN=$(aws iam create-policy --policy-document file://travis/policy_lambda_basic.json --output json --policy-name ${POLICY} | jq -r .Policy.Arn)
-    echo "\nPolicy ARN: ${POLICY_ARN}"
+    echo "Policy ARN: ${POLICY_ARN}"
     aws iam attach-role-policy --role-name ${ROLE} --policy-arn ${POLICY_ARN}
     # sleep so that roles and policies can propagate through system otherwise the lambda won't be able to use it
     sleep 10s
 else
     ROLE_ARN=$(aws iam get-role --role-name ${ROLE} | jq -r .Role.Arn)
-    echo "\nRole ARN: ${ROLE_ARN}"
+    echo "Role ARN: ${ROLE_ARN}"
     POLICY_ARN=$(aws iam list-policies --scope Local | jq -r ".Policies[] | select(.PolicyName==\"${POLICY}\").Arn")
-    echo "\nPolicy ARN: ${POLICY_ARN}"
+    echo "Policy ARN: ${POLICY_ARN}"
 fi
 
 aws lambda get-function --function-name ${LAMBDA}
 if [ $? -ne 0 ]
 then
-    echo "\nCreating lambda ${LAMBDA}"
+    echo "Creating lambda ${LAMBDA}"
     aws lambda create-function --function-name ${LAMBDA} --runtime java8 --role ${ROLE_ARN} --handler ${HANDLER} --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --timeout 5 --output json
     if [ $? -ne 0 ]
     then
-        echo "\nFailed to create lambda"
+        echo "Failed to create lambda"
         exit 1
     fi
-    echo "\nSuccessfully created lambda"
+    echo "Successfully created lambda"
 else
-    echo "\nUpdating lambda ${LAMBDA}"
+    echo "Updating lambda ${LAMBDA}"
     aws lambda update-function-code --function-name ${LAMBDA} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
     if [ $? -ne 0 ]
     then
-        echo "\nFailed to update lambda"
+        echo "Failed to update lambda"
         exit 1
     fi
-    echo "\nSuccessfully updated function"
+    echo "Successfully updated function"
 fi
 
-echo "\nInvoking $LAMBDA"
+echo "Invoking $LAMBDA"
 aws lambda invoke --function-name ${LAMBDA} --payload file://travis/lambda_payload.json --log-type Tail output.json
 if [ $? -ne 0 ]
 then
-    echo "\nFailed to invoke lambda"
+    echo "Failed to invoke lambda"
     exit 1
 fi
 if grep -q "errorMessage" output.json
 then
-    echo "\nLambda invoke error: "
+    echo "Lambda invoke error: "
     cat output.json
     exit 1;
 fi
 
-echo "\nSuccessfully created or updated lambda"
+echo "Successfully created or updated lambda"
 exit 0
