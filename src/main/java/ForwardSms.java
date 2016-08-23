@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
@@ -40,13 +41,16 @@ public class ForwardSms {
     }
 
     private Properties getConfig() {
+        System.out.println("[getConfig]");
         AmazonS3Client s3Client = new AmazonS3Client();
 
         S3Object s3object = s3Client.getObject(new GetObjectRequest("vdda-config", "config.properties"));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
+        InputStream objectData = s3object.getObjectContent();
+
         Properties properties = new Properties();
         try {
-            properties.load(reader);
+            properties.load(objectData);
+            objectData.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
