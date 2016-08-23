@@ -35,7 +35,7 @@ aws lambda get-function --function-name ${LAMBDA}
 if [ $? -ne 0 ]
 then
     echo "Creating lambda ${LAMBDA}"
-    aws lambda create-function --function-name ${LAMBDA} --runtime java8 --role ${ROLE_ARN} --handler ${HANDLER} --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --timeout 15 --output json
+    aws lambda create-function --function-name ${LAMBDA} --runtime java8 --role ${ROLE_ARN} --handler ${HANDLER} --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --timeout 4 --memory-size 512 --output json
     if [ $? -ne 0 ]
     then
         echo "Failed to create lambda"
