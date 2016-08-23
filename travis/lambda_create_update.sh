@@ -16,7 +16,7 @@ then
     echo "Role ARN: ${ROLE_ARN}"
     POLICY_LOG_ARN=$(aws iam create-policy --policy-document file://travis/policy_logs.json --output json --policy-name ${POLICY_LOG} | jq -r .Policy.Arn)
     echo "Policy Log ARN: ${POLICY_LOG_ARN}"
-    POLICY_S3_ARN=$(aws iam create-policy --policy-document file://travis/policy_logs.json --output json --policy-name ${POLICY_S3} | jq -r .Policy.Arn)
+    POLICY_S3_ARN=$(aws iam create-policy --policy-document file://travis/policy_s3.json --output json --policy-name ${POLICY_S3} | jq -r .Policy.Arn)
     echo "Policy Log ARN: ${POLICY_S3_ARN}"
     aws iam attach-role-policy --role-name ${ROLE} --policy-arn ${POLICY_LOG_ARN}
     aws iam attach-role-policy --role-name ${ROLE} --policy-arn ${POLICY_S3_ARN}

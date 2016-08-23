@@ -1,13 +1,15 @@
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
@@ -20,8 +22,8 @@ public class ForwardSms {
 
     public static void main(String[] args) {
         ForwardSms forwardSms = new ForwardSms();
-        File configFile = forwardSms.getConfig();
-        final Properties config = forwardSms.loadProperties(configFile);
+        Properties config = forwardSms.getConfig();
+
         System.out.println(config.getProperty("slack.web_hook"));
     }
 
@@ -29,9 +31,7 @@ public class ForwardSms {
         final String from = "1234567890";
         final String message = "Use the pin 123456 to verify your account";
 
-        final File configFile = getConfig();
-
-        final Properties config = loadProperties(configFile);
+        Properties config = getConfig();
 
         System.out.println(config.getProperty("slack.web_hook"));
 //        sendSlackMessage(message, from);
@@ -39,33 +39,18 @@ public class ForwardSms {
         return String.valueOf(value);
     }
 
-    private File getConfig() {
-        System.out.println("getConfig...");
+    private Properties getConfig() {
         AmazonS3Client s3Client = new AmazonS3Client();
 
-        System.out.println("get object...");
-        File localFile = new File("config2.properties");
-        s3Client.getObject(new GetObjectRequest("vdda-config", "config.properties"), localFile);
-
-        System.out.println("trying to read file...");
-        System.out.println(localFile.exists() && localFile.canRead());
-
-        return localFile;
-    }
-
-    private Properties loadProperties(File file) {
-        FileInputStream fileInput = null;
-        try {
-            fileInput = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        S3Object s3object = s3Client.getObject(new GetObjectRequest("vdda-config", "config.properties"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
         Properties properties = new Properties();
         try {
-            properties.load(fileInput);
+            properties.load(reader);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return properties;
     }
 
