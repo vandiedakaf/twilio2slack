@@ -50,6 +50,7 @@ public class ForwardSms {
         File localFile = new File("config2.properties");
         s3Client.getObject(new GetObjectRequest("vdda-config", "config.properties"), localFile);
 
+        System.out.println("trying to read file...");
         System.out.println(localFile.exists() && localFile.canRead());
 
         return localFile;

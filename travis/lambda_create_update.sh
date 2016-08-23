@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 LAMBDA="twilio2slack"
+HANDLER="ForwardSms::processSms"
 POLICY="lambda-basic"
 ROLE="dev-lambda-role"
 S3_KEY="lambda/twilio2slack-1.0-SNAPSHOT.zip"
@@ -28,7 +29,7 @@ aws lambda get-function --function-name ${LAMBDA}
 if [ $? -ne 0 ]
 then
     echo "\nCreating lambda ${LAMBDA}"
-    aws lambda create-function --function-name ${LAMBDA} --runtime java8 --role ${ROLE_ARN} --handler ForwardSms::processSms --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --timeout 5 --output json
+    aws lambda create-function --function-name ${LAMBDA} --runtime java8 --role ${ROLE_ARN} --handler ${HANDLER} --code S3Bucket=${S3_BUCKET},S3Key=${S3_KEY} --timeout 5 --output json
     if [ $? -ne 0 ]
     then
         echo "\nFailed to create lambda"

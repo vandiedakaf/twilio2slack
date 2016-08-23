@@ -9,11 +9,11 @@
       "Effect": "Allow"
     },
     {
+      "Effect": "Allow",
       "Action": [
-        "s3:*"
+        "s3:GetObject"
       ],
-      "Resource": "arn:aws:s3:::vdda-config",
-      "Effect": "Allow"
+      "Resource": "arn:aws:s3:::*"
     }
   ]
 }
