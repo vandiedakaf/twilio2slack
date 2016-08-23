@@ -22,17 +22,17 @@ public class ForwardSms {
     public static void main(String[] args) {
         ForwardSms forwardSms = new ForwardSms();
         Properties config = forwardSms.getConfig();
-        forwardSms.sendSlackMessage(config.getProperty("slack.web_hook"), "message", "from");
+        forwardSms.sendSlackMessage(config.getProperty("slack.web_hook"), "from", "message");
     }
 
-    public String processSms(String value, Context context) {
+    public String processSms(TwilioSms twilioSms, Context context) {
         final String from = "1234567890";
         final String message = "Use the pin 123456 to verify your account";
 
         config = getConfig();
-        sendSlackMessage(config.getProperty("slack.web_hook"), message, from);
+        sendSlackMessage(config.getProperty("slack.web_hook"), twilioSms.getFrom(), twilioSms.getMessage());
 
-        return String.valueOf(value);
+        return "Message Received";
     }
 
     private Properties getConfig() {
@@ -54,7 +54,7 @@ public class ForwardSms {
         return properties;
     }
 
-    private void sendSlackMessage(String webHook, String message, String from) {
+    private void sendSlackMessage(String webHook, String from, String message) {
         try {
             Unirest.post(webHook)
                     .body("{\"text\": \"A Twilio message has been received.\"," +
