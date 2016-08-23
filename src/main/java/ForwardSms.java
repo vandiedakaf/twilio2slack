@@ -58,7 +58,7 @@ public class ForwardSms {
         try {
             Unirest.post(webHook)
                     .body("{\"text\": \"A Twilio message has been received.\"," +
-                            "\"attachments\":[{\"title\":\"Message\",\"text\":\"" + message + "\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"From\",\"value\":\"" + from + "\"}]}]}")
+                            "\"attachments\":[{\"title\":\"From\",\"text\":\"" + from + "\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"" + message + "\"}]}]}")
                     .asString().getBody();
         } catch (UnirestException e) {
             LOG.error("post to web hook", e);
