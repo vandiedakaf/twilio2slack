@@ -5,7 +5,7 @@ HANDLER="ForwardSms::processSms"
 POLICY_LOG="lambda-logs"
 POLICY_S3="lambda-s3"
 ROLE="dev-lambda-role"
-S3_KEY="lambda/twilio2slack-1.0-SNAPSHOT.zip"
+S3_KEY="$TRAVIS_REPO_SLUG/$TRAVIS_COMMIT/twilio2slack-1.0-SNAPSHOT.zip"
 
 # assume that the policies also exists if the role exists
 aws iam get-role --role-name ${ROLE}
