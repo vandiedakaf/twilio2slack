@@ -2,6 +2,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.google.gson.Gson;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.slf4j.Logger;
@@ -25,10 +26,10 @@ public class ForwardSms {
         forwardSms.sendSlackMessage(config.getProperty("slack.web_hook"), "from", "message");
     }
 
-    public String processSms(TwilioSms twilioSms, Context context) {
-        final String from = "1234567890";
-        final String message = "Use the pin 123456 to verify your account";
-
+    public String processSms(String body, Context context) {
+        // TODO rather parse Json string with Gson because this seems to be way to strict
+        LOG.info("Body: " + body);
+        TwilioSms twilioSms = new Gson().fromJson(body, TwilioSms.class);
         config = getConfig();
         sendSlackMessage(config.getProperty("slack.web_hook"), twilioSms.getFrom(), twilioSms.getMessage());
 
