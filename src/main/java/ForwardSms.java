@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -26,11 +27,13 @@ public class ForwardSms {
         forwardSms.sendSlackMessage(config.getProperty("slack.web_hook"), "from", "message");
     }
 
-    public String processSms(String body, Context context) {
-        // TODO rather parse Json string with Gson because this seems to be way to strict
+    public String processSms(Map<String,Object> body, Context context) {
         LOG.info("Body: " + body);
-        TwilioSms twilioSms = new Gson().fromJson(body, TwilioSms.class);
+
+        TwilioSms twilioSms = new Gson().fromJson(body.toString(), TwilioSms.class);
+
         config = getConfig();
+
         sendSlackMessage(config.getProperty("slack.web_hook"), twilioSms.getFrom(), twilioSms.getMessage());
 
         return "Message Received";
