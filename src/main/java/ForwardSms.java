@@ -1,4 +1,5 @@
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -16,7 +17,7 @@ import java.util.Properties;
 /**
  * Created by francois on 2016-08-18.
  */
-public class ForwardSms {
+public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsResponse> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ForwardSms.class);
     private Properties config;
@@ -27,16 +28,20 @@ public class ForwardSms {
         forwardSms.sendSlackMessage(config.getProperty("slack.web_hook"), "from", "message");
     }
 
-    public String processSms(Map<String,Object> body, Context context) {
-        LOG.info("Body: " + body);
+    @Override
+    public TwilioSmsResponse handleRequest(TwilioSmsRequest input, Context context) {
+        LOG.info("input: " + input);
 
-        TwilioSms twilioSms = new Gson().fromJson(body.toString(), TwilioSms.class);
+        TwilioSmsRequest twilioSmsRequest = new Gson().fromJson(input.toString(), TwilioSmsRequest.class);
 
         config = getConfig();
 
-        sendSlackMessage(config.getProperty("slack.web_hook"), twilioSms.getFrom(), twilioSms.getMessage());
+        sendSlackMessage(config.getProperty("slack.web_hook"), twilioSmsRequest.getFrom(), twilioSmsRequest.getMessage());
 
-        return "Message Received";
+        TwilioSmsResponse output = new TwilioSmsResponse();
+        output.setResponse("Message Received");
+
+        return output;
     }
 
     private Properties getConfig() {

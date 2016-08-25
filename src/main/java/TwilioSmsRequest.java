@@ -1,7 +1,7 @@
 /**
  * Created by francois on 2016-08-23.
  */
-public class TwilioSms {
+public class TwilioSmsRequest {
     private String from;
     private String message;
 

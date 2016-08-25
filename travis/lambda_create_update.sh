@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 LAMBDA="twilio2slack"
-HANDLER="ForwardSms::processSms"
+HANDLER="ForwardSms::handleRequest"
 POLICY_LOG="lambda-logs"
 POLICY_S3="lambda-s3"
 ROLE="dev-lambda-role"
