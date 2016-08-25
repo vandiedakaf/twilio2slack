@@ -3,7 +3,6 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import com.google.gson.Gson;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -30,13 +28,10 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
 
     @Override
     public TwilioSmsResponse handleRequest(TwilioSmsRequest input, Context context) {
-        LOG.info("input: " + input);
-
-        TwilioSmsRequest twilioSmsRequest = new Gson().fromJson(input.toString(), TwilioSmsRequest.class);
 
         config = getConfig();
 
-        sendSlackMessage(config.getProperty("slack.web_hook"), twilioSmsRequest.getFrom(), twilioSmsRequest.getMessage());
+        sendSlackMessage(config.getProperty("slack.web_hook"), input.getFrom(), input.getMessage());
 
         TwilioSmsResponse output = new TwilioSmsResponse();
         output.setResponse("Message Received");
