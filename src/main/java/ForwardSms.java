@@ -20,21 +20,17 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private static final Logger LOG = LoggerFactory.getLogger(ForwardSms.class);
     private Properties config;
 
-    public static void main(String[] args) {
-        ForwardSms forwardSms = new ForwardSms();
-        Properties config = forwardSms.getConfig();
-        forwardSms.sendSlackMessage(config.getProperty("slack.web_hook"), "from", "message");
-    }
-
     @Override
     public TwilioSmsResponse handleRequest(TwilioSmsRequest input, Context context) {
 
+        // TODO authenticate X-Twilio-Signature -- https://www.twilio.com/docs/api/security
+
         config = getConfig();
 
-        sendSlackMessage(config.getProperty("slack.web_hook"), input.getFrom(), input.getMessage());
+        sendSlackMessage(config.getProperty("slack.web_hook"), input);
 
         TwilioSmsResponse output = new TwilioSmsResponse();
-        output.setResponse("Message Received");
+        output.setResponse("Message Forwarded");
 
         return output;
     }
@@ -58,11 +54,11 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         return properties;
     }
 
-    private void sendSlackMessage(String webHook, String from, String message) {
+    private void sendSlackMessage(String webHook, TwilioSmsRequest input) {
         try {
             Unirest.post(webHook)
-                    .body("{\"text\": \"A Twilio message has been received.\"," +
-                            "\"attachments\":[{\"title\":\"From\",\"text\":\"" + from + "\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"" + message + "\"}]}]}")
+                    .body("{\"text\": \"A Twilio message for " + input.getTo() + " has been received.\"," +
+                            "\"attachments\":[{\"title\":\"From\",\"text\":\"" + input.getFrom() + "\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"" + input.getBody() + "\"}]}]}")
                     .asString().getBody();
         } catch (UnirestException e) {
             LOG.error("post to web hook", e);

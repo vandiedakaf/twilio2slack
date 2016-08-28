@@ -2,8 +2,17 @@
  * Created by francois on 2016-08-23.
  */
 public class TwilioSmsRequest {
+    private String body;
     private String from;
-    private String message;
+    private String to;
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
 
     public String getFrom() {
         return from;
@@ -13,11 +22,11 @@ public class TwilioSmsRequest {
         this.from = from;
     }
 
-    public String getMessage() {
-        return message;
+    public String getTo() {
+        return to;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setTo(String to) {
+        this.to = to;
     }
 }
