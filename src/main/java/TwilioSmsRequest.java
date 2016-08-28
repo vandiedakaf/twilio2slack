@@ -4,29 +4,32 @@
 public class TwilioSmsRequest {
     private String Body;
     private String From;
-    private String To;
 
     public String getBody() {
         return Body;
     }
 
-    public void setBdy(String body) {
-        Body = body;
+    public void setBody(String Body) {
+        this.Body = Body;
     }
 
     public String getFrom() {
         return From;
     }
 
-    public void setFrom(String from) {
-        From = from;
+    public void setFrom(String From) {
+        this.From = From;
     }
 
     public String getTo() {
         return To;
     }
 
-    public void setTo(String to) {
-        To = to;
+    public void setTo(String To) {
+        this.To = To;
     }
+
+    private String To;
+
+
 }
