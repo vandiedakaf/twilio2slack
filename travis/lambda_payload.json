@@ -1,4 +1,5 @@
 {
-  "from": "555-BUILD-555",
-  "message": "This is CI in action, booya!"
+  "From": "555-BUILD-123",
+  "To": "555-BUILD-321",
+  "Body": "This is CI in action, booya!"
 }
