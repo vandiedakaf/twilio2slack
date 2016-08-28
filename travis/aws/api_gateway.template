@@ -1,0 +1,50 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Resources": {
+    "RestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Description": "A twilio to slack API",
+        "Name": "twilio2slack"
+      }
+    },
+    "ResourceSms": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "RestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "sms"
+      }
+    },
+    "MethodGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourceSms"
+        },
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS",
+          "Uri": "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:522161570381:function:twilio2slack/invocations",
+          "IntegrationHttpMethod": "GET",
+          "RequestTemplates": {
+            "application/json": "{\"to\": \"$input.params(\"To\")\",\"from\": \"$input.params(\"From\")\",\"body\": \"$input.params(\"Body\")\"}"
+          },
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES"
+        }
+      }
+    }
+  }
+}
