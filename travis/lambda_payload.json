@@ -1,5 +1,5 @@
 {
   "from": "555-BUILD-123",
   "to": "555-BUILD-321",
-  "body": "This is CI in action, booya!"
+  "body": "This is CI in action, right?"
 }

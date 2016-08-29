@@ -30,8 +30,18 @@ task createStack(type: Exec) {
     workingDir '/travis/aws'
 
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-        commandLine 'bash', 'setup.sh' // I'm running this with git bash on windows
+        commandLine 'bash', 'create_stack.sh' // I'm running this with git bash on windows
     } else {
-        commandLine './setup.sh'
+        commandLine './create_stack.sh'
+    }
+}
+
+task deleteStack(type: Exec) {
+    workingDir '/travis/aws'
+
+    if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+        commandLine 'bash', 'delete_stack.sh' // I'm running this with git bash on windows
+    } else {
+        commandLine './delete_stack.sh'
     }
 }

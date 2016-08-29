@@ -42,8 +42,33 @@
           "RequestTemplates": {
             "application/json": "{\"to\": \"$input.params(\"To\")\",\"from\": \"$input.params(\"From\")\",\"body\": \"$input.params(\"Body\")\"}"
           },
-          "PassthroughBehavior": "WHEN_NO_TEMPLATES"
-        }
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": "#set($root = $input.path('$'))\n$root"
+              },
+              "StatusCode": "200"
+            }
+          ]
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/xml": "Empty"
+            }
+          }
+        ]
+      }
+    },
+    "Deployment": {
+      "DependsOn": "MethodGet",
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": { "Ref": "RestApi" },
+        "Description": "Staging Env",
+        "StageName": "Staging"
       }
     }
   }
