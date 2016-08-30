@@ -3,7 +3,7 @@ jdk:
 - oraclejdk8
 before_install:
 - chmod +x gradlew
-- chmod +x ./travis/lambda_upload.sh
+- chmod +x ./travis/lambda_update.sh
 # install AWS CLI
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
