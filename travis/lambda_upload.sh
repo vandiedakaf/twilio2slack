@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
 LAMBDA="twilio2slack"
-HANDLER="ForwardSms::handleRequest"
-POLICY_LOG="lambda-logs"
-POLICY_S3="lambda-s3"
-ROLE="dev-lambda-role"
+# S3_BUCKET is set as an environment variable
 S3_KEY="$TRAVIS_REPO_SLUG/$TRAVIS_COMMIT/twilio2slack-1.0-SNAPSHOT.zip"
 
 aws lambda update-function-code --function-name ${LAMBDA} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
