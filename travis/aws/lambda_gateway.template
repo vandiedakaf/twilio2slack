@@ -1,0 +1,202 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Parameters": {
+    "Handler": {
+      "Description": "Lambda Handler",
+      "Type": "String"
+    },
+    "RoleName": {
+      "Description": "Role Name",
+      "Type": "String"
+    },
+    "S3Bucket": {
+      "Description": "S3 Bucket",
+      "Type": "String"
+    },
+    "S3Key": {
+      "Description": "S3 Key",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "RestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Description": "A twilio to slack API",
+        "Name": "twilio2slack"
+      }
+    },
+    "ResourceSms": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "RestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "sms"
+      }
+    },
+    "MethodGet": {
+      "DependsOn": "LambdaInvokePermission",
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "ResourceId": {
+          "Ref": "ResourceSms"
+        },
+        "HttpMethod": "GET",
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "Type": "AWS",
+          "Uri": {
+            "Fn::Join": [
+              "/",
+              [
+                "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions",
+                {
+                  "Fn::GetAtt": [
+                    "LambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "invocations"
+              ]
+            ]
+          },
+          "IntegrationHttpMethod": "POST",
+          "RequestTemplates": {
+            "application/json": "{\"to\": \"$input.params(\"To\")\",\"from\": \"$input.params(\"From\")\",\"body\": \"$input.params(\"Body\")\"}"
+          },
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": "#set($root = $input.path('$'))\n$root"
+              },
+              "StatusCode": "200"
+            }
+          ]
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/xml": "Empty"
+            }
+          }
+        ]
+      }
+    },
+    "Deployment": {
+      "DependsOn": "MethodGet",
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "RestApi"
+        },
+        "Description": "Staging Env",
+        "StageName": "Staging"
+      }
+    },
+    "LambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "lambda_s3",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "s3:*",
+                  "Resource": "arn:aws:s3:::*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambda_logs",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "logs:*",
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          }
+        ],
+        "RoleName": {
+          "Ref": "RoleName"
+        }
+      }
+    },
+    "LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Handler": {
+          "Ref": "Handler"
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaExecutionRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": {
+            "Ref": "S3Bucket"
+          },
+          "S3Key": {
+            "Ref": "S3Key"
+          }
+        },
+        "Runtime": "java8",
+        "Timeout": "15",
+        "MemorySize": "512"
+      }
+    },
+    "LambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com"
+      }
+    }
+  }
+}
+
