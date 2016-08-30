@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-LAMBDA="twilio2slack"
+FUNCTION_NAME="twilio2slack"
 # S3_BUCKET is set as an environment variable
 S3_KEY="$TRAVIS_REPO_SLUG/$TRAVIS_COMMIT/twilio2slack-1.0-SNAPSHOT.zip"
 
-aws lambda update-function-code --function-name ${LAMBDA} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
+aws lambda update-function-code --function-name ${FUNCTION_NAME} --s3-bucket ${S3_BUCKET} --s3-key ${S3_KEY} --output json
 if [ $? -ne 0 ]
 then
     echo "Failed to update lambda"
@@ -12,8 +12,8 @@ then
 fi
 echo "Successfully updated function"
 
-echo "Invoking $LAMBDA"
-aws lambda invoke --function-name ${LAMBDA} --payload file://travis/lambda_payload.json --log-type Tail output.json
+echo "Invoking $FUNCTION_NAME"
+aws lambda invoke --function-name ${FUNCTION_NAME} --payload file://travis/lambda_payload.json --log-type Tail output.json
 if [ $? -ne 0 ]
 then
     echo "Failed to invoke lambda"

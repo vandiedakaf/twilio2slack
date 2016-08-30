@@ -2,6 +2,10 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "",
   "Parameters": {
+    "FunctionName": {
+      "Description": "Function Name",
+      "Type": "String"
+    },
     "Handler": {
       "Description": "Lambda Handler",
       "Type": "String"
@@ -162,6 +166,9 @@
     "LambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
+        "FunctionName": {
+          "Ref": "FunctionName"
+        },
         "Handler": {
           "Ref": "Handler"
         },

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# S3_BUCKET is set as an environment variable
+FUNCTION_NAME="twilio2slack"
 HANDLER=ForwardSms::handleRequest
 ROLE=dev-lambda-role
 # S3_BUCKET is set as an environment variable
@@ -15,7 +15,7 @@ STACK_SEARCH=$(aws cloudformation list-stacks --stack-status-filter CREATE_IN_PR
 if [ -z "$STACK_SEARCH" ]
 then
     echo Creating stack...
-    CREATE_STACK=$(aws cloudformation create-stack --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=Handler,ParameterValue=${HANDLER},UsePreviousValue=false ParameterKey=RoleName,ParameterValue=${ROLE},UsePreviousValue=false ParameterKey=S3Bucket,ParameterValue=${S3_BUCKET},UsePreviousValue=false ParameterKey=S3Key,ParameterValue=${S3_KEY},UsePreviousValue=false --template-body file://lambda_gateway.template)
+    CREATE_STACK=$(aws cloudformation create-stack --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=FunctionName,ParameterValue=${FUNCTION_NAME},UsePreviousValue=false ParameterKey=Handler,ParameterValue=${HANDLER},UsePreviousValue=false ParameterKey=RoleName,ParameterValue=${ROLE},UsePreviousValue=false ParameterKey=S3Bucket,ParameterValue=${S3_BUCKET},UsePreviousValue=false ParameterKey=S3Key,ParameterValue=${S3_KEY},UsePreviousValue=false --template-body file://lambda_gateway.template)
     echo Stack templated uploaded.
 else
     echo Stack already exists.
