@@ -1,6 +1,6 @@
 # [twilio2slack](https://vandiedakaf.github.io/)
 
-|Build Status|
+![alt tag](https://travis-ci.org/vandiedakaf/twilio2slack.svg?branch=master)
 
 twilio2slack is a pet project and experiment in serverless solutions. This project makes use of Twilio, AWS API Gateway, AWS Lambda and Slack with the goal to forward any SMSes sent to a specific Twilio number to a Slack channel.
 
@@ -24,6 +24,3 @@ You need accounts for the following services:
 1. Link your project in Travis-CI and set the environment variables AWS_ACCESS_KEY_ID, AWS_DEFAULT_REGION, AWS_SECRET_ACCESS_KEY & S3_BUCKET.
 1. Wait for the stack creation to be completed (check the status in the AWS console).
 1. Push your code.
-
-
-|Build Status| image:: https://travis-ci.org/vandiedakaf/twilio2slack.svg?branch=master
