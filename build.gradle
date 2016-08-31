@@ -27,7 +27,7 @@ task buildZip(type: Zip) {
 build.dependsOn buildZip
 
 task createStack(type: Exec) {
-    workingDir '/travis/aws'
+    workingDir '/aws'
 
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
         commandLine 'bash', 'create_stack.sh' // I'm running this with git bash on windows
@@ -37,7 +37,7 @@ task createStack(type: Exec) {
 }
 
 task deleteStack(type: Exec) {
-    workingDir '/travis/aws'
+    workingDir '/aws'
 
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
         commandLine 'bash', 'delete_stack.sh' // I'm running this with git bash on windows

@@ -4,7 +4,7 @@ FUNCTION_NAME="twilio2slack"
 HANDLER=ForwardSms::handleRequest
 ROLE=dev-lambda-role
 # S3_BUCKET is set as an environment variable
-S3_KEY=twilio2slack-1.0-SNAPSHOT.zip # TODO chicken & egg problem here...
+S3_KEY=twilio2slack-1.0-SNAPSHOT.zip # build locally and upload zip file manually before running this stack creation script
 STACK_NAME=twilio2slack
 
 echo
