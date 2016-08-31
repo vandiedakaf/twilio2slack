@@ -19,7 +19,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
 
     private static final Logger LOG = LoggerFactory.getLogger(ForwardSms.class);
     private Properties config;
-    private static final String CONFIG_BUCKET = "vdda-config";
+    private static final String CONFIG_BUCKET = "vdda-config"; // TODO create a config file for this
 
     @Override
     public TwilioSmsResponse handleRequest(TwilioSmsRequest input, Context context) {
@@ -37,7 +37,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     }
 
     private Properties getConfig() {
-        LOG.info("[getConfig]");
+        LOG.debug("[getConfig]");
         AmazonS3Client s3Client = new AmazonS3Client();
 
         S3Object s3object = s3Client.getObject(new GetObjectRequest(CONFIG_BUCKET, "config.properties"));

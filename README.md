@@ -1,8 +1,10 @@
 # [twilio2slack](https://vandiedakaf.github.io/)
 
+|Build Status|
+
 twilio2slack is a pet project and experiment in serverless solutions. This project makes use of Twilio, AWS API Gateway, AWS Lambda and Slack with the goal to forward any SMSes sent to a specific Twilio number to a Slack channel.
 
-This readme only contains setup instructions, a more high level discussion is available at https://vandiedakaf.github.io/.
+This readme only contains setup instructions; for some high level ramblings see the blog post at https://vandiedakaf.github.io/.
 
 ## Requirements
 You need accounts for the following services:
@@ -13,7 +15,7 @@ You need accounts for the following services:
 
 ## Setup
 1. Create a S3 bucket for configuration (replace the variable CONFIG_BUCKET in the lambda code with the bucket's name, er, this should be replaced with something more elegant).
-1. Create a `config.properties` file (with only one variable slack.web_hook=https://hooks.slack.com/services/***) and place it in the configuration bucket.
+1. Create a `config.properties` file (with only one variable `slack.web_hook=https://hooks.slack.com/services/***`) and place it in the configuration bucket.
 1. Create a S3 bucket for lambda function code uploads (the name of this bucket will be your S3_BUCKET environment variable).
 1. Set a local environment variable S3_BUCKET with the value set to your code upload bucket name.
 1. Build the project with `gradle build`.
@@ -24,3 +26,4 @@ You need accounts for the following services:
 1. Push your code.
 
 
+|Build Status| image:: https://travis-ci.org/vandiedakaf/twilio2slack.svg?branch=master
