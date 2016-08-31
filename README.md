@@ -23,4 +23,5 @@ You need accounts for the following services:
 1. Run `gradle createStack` (you can change the variables in the file create_stack.sh to fit your needs; the defaults should suffice though).
 1. Link your project in Travis-CI and set the environment variables AWS_ACCESS_KEY_ID, AWS_DEFAULT_REGION, AWS_SECRET_ACCESS_KEY & S3_BUCKET.
 1. Wait for the stack creation to be completed (check the status in the AWS console).
+1. In Twilio, configure your [Phone Number](https://www.twilio.com/console/phone-numbers/incoming). Edit incoming messages by adding a HTTP GET WebHook to the published API Gateway endpoint, e.g. `https://***.execute-api.eu-west-1.amazonaws.com/stage/sms`.
 1. Push your code.
