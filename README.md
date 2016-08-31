@@ -12,9 +12,10 @@ You need accounts for the following services:
 - Travis-CI
 
 ## Setup
-1. Create a S3 bucket for configuration (replace the variable CONFIG_BUCKET in the lambda code with the bucket's name, er, this should be replaced with something more elegant). 
+1. Create a S3 bucket for configuration (replace the variable CONFIG_BUCKET in the lambda code with the bucket's name, er, this should be replaced with something more elegant).
+1. Create a `config.properties` file (with only one variable slack.web_hook=https://hooks.slack.com/services/***) and place it in the configuration bucket.
 1. Create a S3 bucket for lambda function code uploads (the name of this bucket will be your S3_BUCKET environment variable).
-1. Set a local environment variable S3_BUCKET with the value set the your code upload bucket name.
+1. Set a local environment variable S3_BUCKET with the value set to your code upload bucket name.
 1. Build the project with `gradle build`.
 1. Copy the zip file from the distributions folder to your S3_BUCKET (this is so that the initial lambda function creation has its required code).
 1. Run `gradle createStack` (you can change the variables in the file create_stack.sh to fit your needs; the defaults should suffice though).
