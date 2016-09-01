@@ -1,7 +1,11 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
+
 group 'com.vdda'
 version '1.0-SNAPSHOT'
-
-apply plugin: 'java'
 
 repositories {
     mavenCentral()
@@ -14,6 +18,13 @@ dependencies {
             'com.mashape.unirest:unirest-java:1.4.9',
             'org.slf4j:slf4j-simple:1.6.1'
     )
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
 }
 
 task buildZip(type: Zip) {

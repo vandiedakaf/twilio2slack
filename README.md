@@ -1,6 +1,6 @@
 # [twilio2slack](https://vandiedakaf.github.io/)
 
-![alt tag](https://travis-ci.org/vandiedakaf/twilio2slack.svg?branch=master)
+[![Build Status](https://travis-ci.org/vandiedakaf/twilio2slack.svg?branch=master)](https://travis-ci.org/vandiedakaf/twilio2slack) [![Coverage Status](https://coveralls.io/repos/github/vandiedakaf/twilio2slack/badge.svg)](https://coveralls.io/github/vandiedakaf/twilio2slack)
 
 twilio2slack is a pet project and experiment in serverless solutions. This project makes use of Twilio, AWS API Gateway, AWS Lambda and Slack with the goal to forward any SMSes sent to a specific Twilio number to a Slack channel.
 
