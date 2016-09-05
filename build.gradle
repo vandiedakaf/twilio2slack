@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.6.3'
 }
 
 group 'com.vdda'
@@ -18,16 +16,6 @@ dependencies {
             'com.mashape.unirest:unirest-java:1.4.9',
             'org.slf4j:slf4j-simple:1.6.1'
     )
-    testCompile  (
-            'junit:junit:4.12'
-    )
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
-    }
 }
 
 task buildZip(type: Zip) {

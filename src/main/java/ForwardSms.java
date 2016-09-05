@@ -26,7 +26,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
 
         // TODO authenticate X-Twilio-Signature -- https://www.twilio.com/docs/api/security
 
-        config = getConfig();
+        config = getS3Config();
 
         sendSlackMessage(config.getProperty("slack.web_hook"), input);
 
@@ -36,8 +36,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         return output;
     }
 
-    private Properties getConfig() {
-        LOG.debug("[getConfig]");
+    private Properties getS3Config() {
         AmazonS3Client s3Client = new AmazonS3Client();
 
         S3Object s3object = s3Client.getObject(new GetObjectRequest(CONFIG_BUCKET, "config.properties"));
@@ -58,8 +57,8 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private void sendSlackMessage(String webHook, TwilioSmsRequest input) {
         try {
             Unirest.post(webHook)
-                    .body("{\"text\": \"A Twilio message for " + input.getTo() + " has been received.\"," +
-                            "\"attachments\":[{\"title\":\"From\",\"text\":\"" + input.getFrom() + "\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"" + input.getBody() + "\"}]}]}")
+                    .body(String.format("{\"text\": \"A Twilio message for %s has been received.\"," +
+                            "\"attachments\":[{\"title\":\"From\",\"text\":\"%s\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"%s\"}]}]}", input.getTo(), input.getFrom(), input.getBody()))
                     .asString().getBody();
         } catch (UnirestException e) {
             LOG.error("post to web hook", e);
