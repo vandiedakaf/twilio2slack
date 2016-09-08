@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.twilio.sdk.TwilioUtils;
+import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private boolean validateTwilioRequest(TwilioSmsRequest input){
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
+        LOG.info("Parameters " + input.getParams());
 //        return util.validateRequest(input.getSignature(), config.getProperty("gateway.url"), params);
         return true;
     }
