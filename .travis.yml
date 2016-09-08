@@ -19,6 +19,7 @@ script: "./gradlew build"
 branches:
   only:
   - master
+  - develop
 deploy:
 # requires the following environment variable on travis: AWS_DEFAULT_REGION
   provider: s3
