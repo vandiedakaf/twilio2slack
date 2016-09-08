@@ -34,6 +34,7 @@ deploy:
   region: eu-west-1
   on:
     repo: vandiedakaf/twilio2slack
+    all_branches: true
   skip_cleanup: true
 after_deploy:
 # requires the following environment variables on travis: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & AWS_DEFAULT_REGION
