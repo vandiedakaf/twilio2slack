@@ -38,7 +38,5 @@ deploy:
 after_deploy:
 # requires the following environment variables on travis: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY & AWS_DEFAULT_REGION
   - ./travis/lambda_update.sh || travis_terminate 1
-after_success:
-- ./gradlew jacocoTestReport coveralls
 notifications:
   email: false
