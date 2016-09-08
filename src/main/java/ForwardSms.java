@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.twilio.sdk.TwilioUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,16 +36,27 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     @Override
     public TwilioSmsResponse handleRequest(TwilioSmsRequest input, Context context) {
 
-        // TODO authenticate X-Twilio-Signature -- https://www.twilio.com/docs/api/security
+        TwilioSmsResponse output = new TwilioSmsResponse();
 
         config = getS3Config();
 
-        sendSlackMessage(config.getProperty("slack.web_hook"), input);
+        if (!validateTwilioRequest(input)) {
+            output.setResponse("Not authorised");
+            return output;
+        }
 
-        TwilioSmsResponse output = new TwilioSmsResponse();
+        sendSlackMessage(config.getProperty("slack.web_hook"), input);
         output.setResponse("Message Forwarded");
 
         return output;
+    }
+
+    // https://www.twilio.com/docs/api/security
+    private boolean validateTwilioRequest(TwilioSmsRequest input){
+        TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
+
+//        return util.validateRequest(input.getSignature(), config.getProperty("gateway.url"), params);
+        return true;
     }
 
     private Properties getS3Config() {

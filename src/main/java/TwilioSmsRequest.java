@@ -5,6 +5,7 @@ public class TwilioSmsRequest {
     private String body;
     private String from;
     private String to;
+    private String params;
 
     public String getBody() {
         return body;
@@ -28,5 +29,13 @@ public class TwilioSmsRequest {
 
     public void setTo(String to) {
         this.to = to;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 }
