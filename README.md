@@ -4,7 +4,7 @@
 
 twilio2slack is a pet project and experiment in serverless solutions. This project makes use of Twilio, AWS API Gateway, AWS Lambda and Slack with the goal to forward any SMSes sent to a specific Twilio number to a Slack channel.
 
-This readme only contains setup instructions; for some high level ramblings see the blog post at https://vandiedakaf.github.io/.
+This readme only contains setup instructions; for some high level ramblings see the blog post at https://vandiedakaf.github.io/java/aws/twilio/slack/serverless/2016/09/06/twilio-to-slack.html.
 
 ## Requirements
 You need accounts for the following services:
