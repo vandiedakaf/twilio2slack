@@ -3,7 +3,7 @@ import java.util.Map;
 /**
  * Created by francois on 2016-09-11.
  */
-public class Params {
+public class Parameters {
     private Map<String, String> path;
     private Map<String, String> queryString;
     private Map<String, String> header;

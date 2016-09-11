@@ -18,7 +18,7 @@ import java.util.Properties;
 /**
  * Created by francois on 2016-08-18.
  */
-public class ForwardSms implements RequestHandler<Params, TwilioSmsResponse> {
+public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsResponse> {
 
     private static final Logger log = LoggerFactory.getLogger(ForwardSms.class);
     private Properties config;
@@ -36,7 +36,7 @@ public class ForwardSms implements RequestHandler<Params, TwilioSmsResponse> {
     }
 
     @Override
-    public TwilioSmsResponse handleRequest(Params input, Context context) {
+    public TwilioSmsResponse handleRequest(TwilioSmsRequest input, Context context) {
 
         TwilioSmsResponse output = new TwilioSmsResponse();
 
@@ -46,10 +46,10 @@ public class ForwardSms implements RequestHandler<Params, TwilioSmsResponse> {
         log.info(gson.toJson(input));
 
         log.info("***** query ****");
-        input.getQueryString().forEach((k,v) -> log.info(k + ": " + v));
+        input.getParameters().getQueryString().forEach((k,v) -> log.info(k + ": " + v));
 
         log.info("***** header ****");
-        input.getHeader().forEach((k,v) -> log.info(k + ": " + v));
+        input.getParameters().getHeader().forEach((k,v) -> log.info(k + ": " + v));
 
 //        if (!validateTwilioRequest(input)) {
 //            output.setResponse("Not authorised");
@@ -71,7 +71,7 @@ public class ForwardSms implements RequestHandler<Params, TwilioSmsResponse> {
 
         Gson gson = new GsonBuilder().create();
 
-        Params params = gson.fromJson(input.getParams(), Params.class);
+        Parameters params = gson.fromJson(input.getParams(), Parameters.class);
 
         log.info("JsonObject: " + gson.toJson(params));
         log.info("*********");
