@@ -6,7 +6,6 @@ public class TwilioSmsRequest {
     private String from;
     private String to;
     private String params;
-    private String json;
 
     public String getBody() {
         return body;
@@ -38,13 +37,5 @@ public class TwilioSmsRequest {
 
     public void setParams(String params) {
         this.params = params;
-    }
-
-    public String getJson() {
-        return json;
-    }
-
-    public void setJson(String json) {
-        this.json = json;
     }
 }

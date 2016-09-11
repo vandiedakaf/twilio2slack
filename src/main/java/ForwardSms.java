@@ -3,10 +3,13 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import com.twilio.sdk.TwilioUtils;
-import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +22,7 @@ import java.util.Properties;
  */
 public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsResponse> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ForwardSms.class);
+    private static final Logger log = LoggerFactory.getLogger(ForwardSms.class);
     private Properties config;
     private static final String CONFIG_BUCKET;
 
@@ -56,8 +59,17 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private boolean validateTwilioRequest(TwilioSmsRequest input){
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
-        LOG.info("Parameters " + input.getParams());
-        LOG.info("Json " + input.getJson());
+        log.info("Parameters: " + input.getParams());
+
+
+        Gson gson = new GsonBuilder().create();
+
+        Params params = gson.fromJson(input.getParams(), Params.class);
+
+        log.info("JsonObject: " + gson.toJson(params));
+        log.info("*********");
+        params.getQueryString().forEach((k,v) -> log.info(k + ": " + v));
+
 //        return util.validateRequest(input.getSignature(), config.getProperty("gateway.url"), params);
         return true;
     }
@@ -73,7 +85,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
             objectData.close();
         } catch (IOException e) {
             e.printStackTrace();
-            LOG.error("load properties", e);
+            log.error("load properties", e);
         }
 
         return properties;
@@ -86,7 +98,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
                             "\"attachments\":[{\"title\":\"From\",\"text\":\"%s\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"%s\"}]}]}", input.getTo(), input.getFrom(), input.getBody()))
                     .asString().getBody();
         } catch (UnirestException e) {
-            LOG.error("post to web hook", e);
+            log.error("post to web hook", e);
         }
     }
 }
