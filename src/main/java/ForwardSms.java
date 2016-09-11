@@ -42,6 +42,12 @@ public class ForwardSms implements RequestHandler<Params, TwilioSmsResponse> {
 
         config = getS3Config();
 
+        log.info("***** query ****");
+        input.getQueryString().forEach((k,v) -> log.info(k + ": " + v));
+
+        log.info("***** header ****");
+        input.getHeader().forEach((k,v) -> log.info(k + ": " + v));
+
 //        if (!validateTwilioRequest(input)) {
 //            output.setResponse("Not authorised");
 //            return output;
