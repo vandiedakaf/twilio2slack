@@ -42,6 +42,9 @@ public class ForwardSms implements RequestHandler<Params, TwilioSmsResponse> {
 
         config = getS3Config();
 
+        Gson gson = new GsonBuilder().create();
+        log.info(gson.toJson(input));
+
         log.info("***** query ****");
         input.getQueryString().forEach((k,v) -> log.info(k + ": " + v));
 
