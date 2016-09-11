@@ -57,6 +57,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
         LOG.info("Parameters " + input.getParams());
+        LOG.info("Json " + input.getJson());
 //        return util.validateRequest(input.getSignature(), config.getProperty("gateway.url"), params);
         return true;
     }
