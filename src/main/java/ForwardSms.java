@@ -5,10 +5,8 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.*;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import com.twilio.sdk.TwilioUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,7 @@ import java.util.Properties;
 /**
  * Created by francois on 2016-08-18.
  */
-public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsResponse> {
+public class ForwardSms implements RequestHandler<Params, TwilioSmsResponse> {
 
     private static final Logger log = LoggerFactory.getLogger(ForwardSms.class);
     private Properties config;
@@ -38,18 +36,18 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     }
 
     @Override
-    public TwilioSmsResponse handleRequest(TwilioSmsRequest input, Context context) {
+    public TwilioSmsResponse handleRequest(Params input, Context context) {
 
         TwilioSmsResponse output = new TwilioSmsResponse();
 
         config = getS3Config();
 
-        if (!validateTwilioRequest(input)) {
-            output.setResponse("Not authorised");
-            return output;
-        }
+//        if (!validateTwilioRequest(input)) {
+//            output.setResponse("Not authorised");
+//            return output;
+//        }
 
-        sendSlackMessage(config.getProperty("slack.web_hook"), input);
+//        sendSlackMessage(config.getProperty("slack.web_hook"), input);
         output.setResponse("Message Forwarded");
 
         return output;
