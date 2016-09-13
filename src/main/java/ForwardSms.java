@@ -48,16 +48,13 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         log.info("***** query ****");
         input.getQuerystring().forEach((k,v) -> log.info(k + ": " + v));
 
-        log.info("***** header ****");
-        input.getHeader().forEach((k,v) -> log.info(k + ": " + v));
-
-//        if (!validateTwilioRequest(input)) {
-//            output.setResponse("Not authorised");
-//            return output;
-//        }
+        if (!validateTwilioRequest(input)) {
+            output.setResponse("<response>Not authorised.</response>");
+            return output;
+        }
 
         sendSlackMessage(config.getProperty("slack.web_hook"), input);
-        output.setResponse("Message Forwarded");
+        output.setResponse("<response>Message Forwarded</response>");
 
         return output;
     }
@@ -66,8 +63,10 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private boolean validateTwilioRequest(TwilioSmsRequest input){
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
-//        return util.validateRequest(input.getSignature(), config.getProperty("gateway.url"), params);
-        return true;
+        log.info(input.getHeader().get("X-Twilio-Signature"));
+        log.info(config.getProperty("gateway.url"));
+
+        return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), input.getQuerystring());
     }
 
     private Properties getS3Config() {
