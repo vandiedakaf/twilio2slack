@@ -79,7 +79,7 @@
           "RequestTemplates": {
             "application/json": {
               "Fn::Join": [
-                "\n",
+                "\\n",
                 [
                   "#set($allParams = $input.params())",
                   "{",
