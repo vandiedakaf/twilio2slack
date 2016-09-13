@@ -8,18 +8,12 @@ import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.twilio.sdk.TwilioUtils;
-import org.apache.commons.codec.binary.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Properties;
 
 /**
  * Created by francois on 2016-08-18.
@@ -90,17 +84,6 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private boolean validateTwilioRequest(TwilioSmsRequest input){
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
-        log.info(input.getHeader().get("X-Twilio-Signature"));
-        log.info(config.getProperty("gateway.url"));
-        attemptValidationSignature(config.getProperty("gateway.url"), input.getQuerystring());
-        attemptValidationSignature(config.getProperty("gateway.url"), null);
-
-        StringBuilder testUrl = new StringBuilder(config.getProperty("gateway.url"));
-        input.getQuerystring().forEach((k,v) -> testUrl.append(k + v));
-        String finalUrl = testUrl.toString();
-        log.info("finalUrl: " + finalUrl);
-        attemptValidationSignature(finalUrl, null);
-
         return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), input.getQuerystring());
     }
 
@@ -119,48 +102,6 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         }
 
         return properties;
-    }
-
-    private String attemptValidationSignature(String url, Map<String,String> params) {
-        SecretKeySpec signingKey = new SecretKeySpec(config.getProperty("twilio.auth_token").getBytes(), "HmacSHA1");
-
-        try {
-            //initialize the hash algortihm
-            Mac mac = Mac.getInstance("HmacSHA1");
-            mac.init(signingKey);
-
-            //sort the params alphabetically, and append the key and value of each to the url
-            StringBuffer data = new StringBuffer(url);
-            if (params != null) {
-                List<String> sortedKeys = new ArrayList<String>( params.keySet());
-                Collections.sort(sortedKeys);
-
-                for (String s: sortedKeys) {
-                    data.append(s);
-                    String v = "";
-                    if (params.get(s) != null) {
-                        v = params.get(s);
-                    }
-                    data.append(v);
-                }
-            }
-
-            //compute the hmac on input data bytes
-            byte[] rawHmac = mac.doFinal(data.toString().getBytes("UTF-8"));
-
-            //base64-encode the hmac
-            String signature = new String(org.apache.commons.codec.binary.Base64.encodeBase64(rawHmac));
-
-            log.info("signature: " + signature);
-
-            return signature;
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        } catch (InvalidKeyException e) {
-            return null;
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
     }
 
     private void sendSlackMessage(String webHook, TwilioSmsRequest input) {

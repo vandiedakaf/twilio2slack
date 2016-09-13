@@ -12,19 +12,19 @@ then
 fi
 echo "Successfully updated function"
 
-echo "Invoking $FUNCTION_NAME"
-aws lambda invoke --function-name ${FUNCTION_NAME} --payload file://travis/lambda_payload.json --log-type Tail output.json
-if [ $? -ne 0 ]
-then
-    echo "Failed to invoke lambda"
-    exit 1
-fi
-if grep -q "errorMessage" output.json
-then
-    echo "Lambda invoke error: "
-    cat output.json
-    exit 1;
-fi
+#echo "Invoking $FUNCTION_NAME"
+#aws lambda invoke --function-name ${FUNCTION_NAME} --payload file://travis/lambda_payload.json --log-type Tail output.json
+#if [ $? -ne 0 ]
+#then
+#    echo "Failed to invoke lambda"
+#    exit 1
+#fi
+#if grep -q "errorMessage" output.json
+#then
+#    echo "Lambda invoke error: "
+#    cat output.json
+#    exit 1;
+#fi
 
 echo "Successfully created or updated lambda"
 exit 0
