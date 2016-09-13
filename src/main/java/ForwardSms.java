@@ -95,11 +95,11 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         attemptValidationSignature(config.getProperty("gateway.url"), input.getQuerystring());
         attemptValidationSignature(config.getProperty("gateway.url"), null);
 
-        String testUrl = config.getProperty("gateway.url") + "?";
-        input.getQuerystring().forEach((k,v) -> testUrl.concat(k + "=" + v + "&"));
-        testUrl.substring(0,testUrl.length()-1);
-        log.info("testUrl: " + testUrl);
-        attemptValidationSignature(testUrl, null);
+        StringBuilder testUrl = new StringBuilder(config.getProperty("gateway.url") + "?");
+        input.getQuerystring().forEach((k,v) -> testUrl.append(k + "=" + v + "&"));
+        String finalUrl = testUrl.substring(0,testUrl.length()-1);
+        log.info("finalUrl: " + finalUrl);
+        attemptValidationSignature(finalUrl, null);
 
         return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), input.getQuerystring());
     }
