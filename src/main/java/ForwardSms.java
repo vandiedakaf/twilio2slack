@@ -42,6 +42,11 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
 
         config = getS3Config();
 
+        if (!configSet()) {
+            output.setResponse("<response>Config Required</response>");
+            return output;
+        }
+
         Gson gson = new GsonBuilder().create();
         log.info(gson.toJson(input));
 
@@ -49,7 +54,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         input.getQuerystring().forEach((k,v) -> log.info(k + ": " + v));
 
         if (!validateTwilioRequest(input)) {
-            output.setResponse("<response>Not authorised.</response>");
+            output.setResponse("<response>Not Authorised</response>");
             return output;
         }
 
@@ -57,6 +62,22 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         output.setResponse("<response>Message Forwarded</response>");
 
         return output;
+    }
+
+    private boolean configSet() {
+        if (config.getProperty("gateway.url") == null) {
+            log.warn("gateway.url not found.");
+            return false;
+        }
+        if (config.getProperty("slack.web_hook") == null) {
+            log.warn("slack.web_hook not found.");
+            return false;
+        }
+        if (config.getProperty("twilio.auth_token") == null) {
+            log.warn("twilio.auth_token not found.");
+            return false;
+        }
+        return true;
     }
 
     // https://www.twilio.com/docs/api/security
