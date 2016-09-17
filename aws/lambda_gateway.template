@@ -79,7 +79,7 @@
           "RequestTemplates": {
             "application/json": {
               "Fn::Join": [
-                "\\n",
+                "\n",
                 [
                   "#if ($context.httpMethod == \"POST\")",
                   " #set($rawAPIData = $input.path(\"$\"))",
@@ -125,7 +125,7 @@
               "ResponseTemplates": {
                 "application/json": {
                   "Fn::Join": [
-                    "\\n",
+                    "\n",
                     [
                       "#set($inputRoot = $input.path('$'))",
                       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
@@ -162,7 +162,7 @@
           "Ref": "RestApi"
         },
         "Description": "Staging Env",
-        "StageName": "Staging"
+        "StageName": "stage"
       }
     },
     "LambdaExecutionRole": {
