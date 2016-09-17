@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 /**
  * Created by francois on 2016-08-18.
@@ -84,7 +86,9 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private boolean validateTwilioRequest(TwilioSmsRequest input){
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
-        return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), input.getParameters());
+        Map<String, String> sortedParameters = new TreeMap<>(input.getParameters());
+
+        return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), sortedParameters);
     }
 
     private Properties getS3Config() {
