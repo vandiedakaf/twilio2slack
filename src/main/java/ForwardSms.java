@@ -43,7 +43,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         config = getS3Config();
 
         if (!configSet()) {
-            output.setResponse("<response>Config Required</response>");
+            output.setResponse("Config Required");
             return output;
         }
 
@@ -51,15 +51,15 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         log.info(gson.toJson(input));
 
         log.info("***** query ****");
-        input.getQuerystring().forEach((k,v) -> log.info(k + ": " + v));
+        input.getParameters().forEach((k, v) -> log.info(k + ": " + v));
 
         if (!validateTwilioRequest(input)) {
-            output.setResponse("<response>Not Authorised</response>");
+            output.setResponse("Not Authorised");
             return output;
         }
 
         sendSlackMessage(config.getProperty("slack.web_hook"), input);
-        output.setResponse("<response>Message Forwarded</response>");
+        output.setResponse("Message Forwarded");
 
         return output;
     }
@@ -84,7 +84,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
     private boolean validateTwilioRequest(TwilioSmsRequest input){
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
-        return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), input.getQuerystring());
+        return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), input.getParameters());
     }
 
     private Properties getS3Config() {
@@ -108,7 +108,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         try {
             Unirest.post(webHook)
                     .body(String.format("{\"text\": \"A Twilio message for %s has been received.\"," +
-                            "\"attachments\":[{\"title\":\"From\",\"text\":\"%s\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"%s\"}]}]}", input.getQuerystring().get("To"), input.getQuerystring().get("From"), input.getQuerystring().get("Body")))
+                            "\"attachments\":[{\"title\":\"From\",\"text\":\"%s\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"%s\"}]}]}", input.getParameters().get("To"), input.getParameters().get("From"), input.getParameters().get("Body")))
                     .asString().getBody();
         } catch (UnirestException e) {
             log.error("post to web hook", e);
