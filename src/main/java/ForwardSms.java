@@ -3,8 +3,6 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.twilio.sdk.TwilioUtils;
@@ -49,9 +47,6 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
             return output;
         }
 
-        Gson gson = new GsonBuilder().create();
-        log.info(gson.toJson(input));
-
         if (!validateTwilioRequest(input)) {
             output.setResponse("Not Authorised");
             return output;
@@ -84,9 +79,6 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
         Map<String, String> sortedParameters = new TreeMap<>(input.getParameters());
-
-        log.info("***** sortedParameters ****");
-        sortedParameters.forEach((k, v) -> log.info(k + ": " + v));
 
         return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), sortedParameters);
     }
