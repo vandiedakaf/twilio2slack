@@ -77,7 +77,7 @@
           },
           "IntegrationHttpMethod": "POST",
           "RequestTemplates": {
-            "application/json": {
+            "application/x-www-form-urlencoded": {
               "Fn::Join": [
                 "\n",
                 [
