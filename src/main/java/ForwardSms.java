@@ -52,9 +52,6 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         Gson gson = new GsonBuilder().create();
         log.info(gson.toJson(input));
 
-        log.info("***** query ****");
-        input.getParameters().forEach((k, v) -> log.info(k + ": " + v));
-
         if (!validateTwilioRequest(input)) {
             output.setResponse("Not Authorised");
             return output;
@@ -87,6 +84,9 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
         Map<String, String> sortedParameters = new TreeMap<>(input.getParameters());
+
+        log.info("***** sortedParameters ****");
+        sortedParameters.forEach((k, v) -> log.info(k + ": " + v));
 
         return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), sortedParameters);
     }
