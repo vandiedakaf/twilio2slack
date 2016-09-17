@@ -1,5 +1,7 @@
 {
-  "from": "555-BUILD-123",
-  "to": "555-BUILD-321",
-  "body": "This is CI in action, right, kinda, no?"
+  "querystring" : {
+    "Body": "This is CI in action, right, kinda, no?",
+    "From": "555-BUILD-123",
+    "To": "555-BUILD-321"
+  }
 }

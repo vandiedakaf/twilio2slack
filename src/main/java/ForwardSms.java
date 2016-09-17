@@ -11,14 +11,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 /**
  * Created by francois on 2016-08-18.
  */
 public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsResponse> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ForwardSms.class);
+    private static final Logger log = LoggerFactory.getLogger(ForwardSms.class);
     private Properties config;
     private static final String CONFIG_BUCKET;
 
@@ -40,8 +42,13 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
 
         config = getS3Config();
 
+        if (!configSet()) {
+            output.setResponse("Config Required");
+            return output;
+        }
+
         if (!validateTwilioRequest(input)) {
-            output.setResponse("Not authorised");
+            output.setResponse("Not Authorised");
             return output;
         }
 
@@ -51,12 +58,29 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         return output;
     }
 
+    private boolean configSet() {
+        if (config.getProperty("gateway.url") == null) {
+            log.warn("gateway.url not found.");
+            return false;
+        }
+        if (config.getProperty("slack.web_hook") == null) {
+            log.warn("slack.web_hook not found.");
+            return false;
+        }
+        if (config.getProperty("twilio.auth_token") == null) {
+            log.warn("twilio.auth_token not found.");
+            return false;
+        }
+        return true;
+    }
+
     // https://www.twilio.com/docs/api/security
     private boolean validateTwilioRequest(TwilioSmsRequest input){
         TwilioUtils util = new TwilioUtils(config.getProperty("twilio.auth_token"));
 
-//        return util.validateRequest(input.getSignature(), config.getProperty("gateway.url"), params);
-        return true;
+        Map<String, String> sortedParameters = new TreeMap<>(input.getParameters());
+
+        return util.validateRequest(input.getHeader().get("X-Twilio-Signature"), config.getProperty("gateway.url"), sortedParameters);
     }
 
     private Properties getS3Config() {
@@ -70,7 +94,7 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
             objectData.close();
         } catch (IOException e) {
             e.printStackTrace();
-            LOG.error("load properties", e);
+            log.error("load properties", e);
         }
 
         return properties;
@@ -80,10 +104,10 @@ public class ForwardSms implements RequestHandler<TwilioSmsRequest, TwilioSmsRes
         try {
             Unirest.post(webHook)
                     .body(String.format("{\"text\": \"A Twilio message for %s has been received.\"," +
-                            "\"attachments\":[{\"title\":\"From\",\"text\":\"%s\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"%s\"}]}]}", input.getTo(), input.getFrom(), input.getBody()))
+                            "\"attachments\":[{\"title\":\"From\",\"text\":\"%s\",\"color\":\"#86c53c\",\"fields\":[{\"title\":\"Message\",\"value\":\"%s\"}]}]}", input.getParameters().get("To"), input.getParameters().get("From"), input.getParameters().get("Body")))
                     .asString().getBody();
         } catch (UnirestException e) {
-            LOG.error("post to web hook", e);
+            log.error("post to web hook", e);
         }
     }
 }
