@@ -33,7 +33,7 @@ task createStack(type: Exec) {
     workingDir '/aws'
 
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-        commandLine 'bash', 'create_stack.sh' // I'm running this with git bash on windows
+        commandLine 'bash', 'create_stack.sh' // git bash on windows
     } else {
         commandLine './create_stack.sh'
     }
@@ -43,7 +43,7 @@ task deleteStack(type: Exec) {
     workingDir '/aws'
 
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-        commandLine 'bash', 'delete_stack.sh' // I'm running this with git bash on windows
+        commandLine 'bash', 'delete_stack.sh' // git bash on windows
     } else {
         commandLine './delete_stack.sh'
     }

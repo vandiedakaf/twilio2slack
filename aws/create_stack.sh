@@ -18,5 +18,7 @@ then
     CREATE_STACK=$(aws cloudformation create-stack --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=FunctionName,ParameterValue=${FUNCTION_NAME},UsePreviousValue=false ParameterKey=Handler,ParameterValue=${HANDLER},UsePreviousValue=false ParameterKey=RoleName,ParameterValue=${ROLE},UsePreviousValue=false ParameterKey=S3Bucket,ParameterValue=${S3_BUCKET},UsePreviousValue=false ParameterKey=S3Key,ParameterValue=${S3_KEY},UsePreviousValue=false --template-body file://lambda_gateway.template)
     echo Stack templated uploaded.
 else
-    echo Stack already exists.
+    echo Stack already exists --- updating stack...
+    UPDATE_STACK=$(aws cloudformation update-stack --stack-name ${STACK_NAME} --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=FunctionName,ParameterValue=${FUNCTION_NAME},UsePreviousValue=false ParameterKey=Handler,ParameterValue=${HANDLER},UsePreviousValue=false ParameterKey=RoleName,ParameterValue=${ROLE},UsePreviousValue=false ParameterKey=S3Bucket,ParameterValue=${S3_BUCKET},UsePreviousValue=false ParameterKey=S3Key,ParameterValue=${S3_KEY},UsePreviousValue=false --template-body file://lambda_gateway.template)
+    echo Stack templated updated.
 fi

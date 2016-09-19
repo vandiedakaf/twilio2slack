@@ -15,7 +15,7 @@ You need accounts for the following services:
 
 ## Initial Setup
 1. Create a S3 bucket for configuration (replace the variable CONFIG_BUCKET in the lambda code with the bucket's name, er, this should be replaced with something more elegant).
-1. Create a `config.properties` file with three properties:
+1. Create a `config.properties` file with three properties (there's a `config-template.properties` file in the project):
     1. `gateway.url=https://***.amazonaws.com/stage/sms`
     1. `slack.web_hook=https://hooks.slack.com/services/***`
     1. `twilio.auth_token=***`
