@@ -21,9 +21,9 @@ branches:
   - master
   - develop
 deploy:
-# requires the following environment variable on travis: AWS_DEFAULT_REGION
+# requires the following environment variables on travis: AWS_DEFAULT_REGION, AWS_ACCESS_KEY_ID, S3_BUCKET
   provider: s3
-  access_key_id: AKIAIAUH2WARTNOIU6ZQ
+  access_key_id: "$AWS_ACCESS_KEY_ID"
   secret_access_key:
     secure: cN84AGsoqp25XYbmRHVsGXL0cDM5Nem9/oNy9ByXNLYbGHkh6IPcsdy/n8FkIUu+riTvCF3ExtmyDcct/9qqsvNFXg7MFtF4a/P+vxyJEkja0MCgkzNLMVUEqwQ9d5PZU+GRvn+KZWsytljwbRGdNrdQjcVmzT6U0WHzR8YHhWnem4qZ/uCS+/tdWk0YHzEbNkkz5uNm07y6xPpKRLzPafj+FFUbUoyC2cVXtbyaMFViAY4ntI1tUiLS5Zx3LvE2RLQiRBntJsMvXtrWkWiSN2NlBIpTx6Uyty4HLEPEfdsqjMxR1IbJv/y7Uv8UPaYHP+Kry9nHCnc9c/ax0hs/6BaPZRo3+2ptpNfM9tIAwoxOTp/UgpPH/rt3vonepxJuXcxR0FNx5mBg2oDjkFLHv/97yo7UrQfptLWeTRJ0U8X+gk4O8KbCh08QnGF498pc8G10uCZhvGe3Tg0M6Neu+scirfmsFezSBdE3t8Jm2E4tzCVTPx/Bzqt3GKMAB6y86EjQ59hv26I2RvUsRY2ACoKRQ2UBw5M6KFD5iAeji7ajOf40NHeMXCYWJMQ24ySflGm4xzfawHIVfNHKHA/5VGDDBlFFicJAsTbP7JxtzSd+DIMGcW8wPfA33D7sGbXMJOytt9M7AVv9lLabwAPxLHN9srhBrj1vXuqJC+srP9E=
   bucket: $S3_BUCKET
@@ -31,7 +31,7 @@ deploy:
 #  upload-dir: lambda
   upload-dir: $TRAVIS_REPO_SLUG/$TRAVIS_COMMIT
   acl: private
-  region: eu-west-1
+  region: "$AWS_DEFAULT_REGION"
   on:
     repo: vandiedakaf/twilio2slack
     all_branches: true
